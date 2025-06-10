@@ -81,6 +81,7 @@ typedef float nema_vg_float_t; /**< Floating point data type (default is 'float'
 #define NEMA_VG_ERR_INVALID_CAP_STYLE       (0x00800000U)  /**< Invalid cap style */
 #define NEMA_VG_ERR_INVALID_JOIN_STYLE      (0x01000000U)  /**< Invalid join style */
 #define NEMA_VG_ERR_INVALID_STENCIL_SIZE    (0x02000000U)  /**< Invalid stencil buffer size */
+#define NEMA_VG_ERR_DEPRECATED_FONT         (0x04000000U)  /**< The font version is an old one, but it is still compatible with NemaVG API*/
 
 #define NEMA_VG_FILL_DRAW                   (0x00U) /**< DEPRECATED Stroke fill rule */
 #define NEMA_VG_STROKE                      (0x00U) /**< Stroke fill rule */
@@ -105,6 +106,7 @@ typedef float nema_vg_float_t; /**< Floating point data type (default is 'float'
 #define NEMA_VG_TSVG_DISABLE_NONE          (0x00000000U) /**< Disable none*/
 #define NEMA_VG_TSVG_DISABLE_CAPS          (0x00000001U) /**< Disable caps*/
 #define NEMA_VG_TSVG_DISABLE_JOINS         (0x00000002U) /**< Disable joins*/
+#define NEMA_VG_TSVG_DISABLE_DASHING       (0x00000003U) /**< Disable dashing*/
 
 /** \brief Set the global transformation matrix. Global matrix will be applied in all NemaVG rendering operations that will follow.
  *
@@ -156,6 +158,42 @@ void nema_vg_stroke_set_join_style(uint8_t join_style);
  *
  */
 void nema_vg_stroke_set_miter_limit(float miter_limit);
+
+/** \brief Set dash patern.
+ * Dashing is enabled when dash size array is bigger than zero.
+ * Dash pattern consists of an array of floats that alternate the on and off phase of the dash segments.
+ * The first value indicates the first on segment, the second value indicates the first off segment and each
+ * subsequent pair indicates the next on-off pair. The dash array size should always be an even number.
+ * If odd dash array size is provided, the last element is ignored by the library.
+ * Segments of zero length are allowed and only the caps will be drawn on those segments if they are
+ * either NEMA_VG_CAP_ROUND or NEMA_VG_CAP_SQUARE. If NEMA_VG_CAP_BUTT cap is selected nothing will be drawn
+ *
+ * \param dash_pattern pointer to dash pattern array
+ * \param dash_pattern_size dash phase array size
+ *
+ */
+void nema_vg_stroke_set_dash_pattern(const float* dash_pattern, size_t dash_pattern_size);
+
+/** \brief Set dash phase.
+ * Indicates the length of the dash pattern that is discarded
+ * the first time a subpath is processed. After the dash phase is reached the subsequent
+ * path is stroked according to the dash pattern. A negative dash phase is equivalent to the positive
+ * dash phase calculated by adding a suitable multiple of the dash pattern length.
+ *
+ * \param dash_phase dash phase
+ *
+ */
+void nema_vg_stroke_set_dash_phase(float dash_phase);
+
+/** \brief Enable/Disable dash phase reseting
+ *
+ * \param enable boolean parameter to enable/disable the resetting of the dash phase. When
+ * this feature is enabled the dash phase specified is used at the beggining of each subpath of
+ * the original path otherwise what is left of the dash phase at the end of the subpath is used for the
+ * next subpath. Default value is false.
+ *
+ */
+void nema_vg_stroke_reset_dash_phase(uint8_t enable);
 
 /** \brief Enable/Disable Masking.
  *
@@ -212,13 +250,17 @@ void nema_vg_handle_large_coords(uint8_t enable, uint8_t allow_internal_alloc);
 
 /** \brief Bind segment and data buffers to be used for handling large coordinates
  *
- * \param segs Pointer to segment buffer for large coordinates
- * \param segs_size_bytes Segment buffer size in bytes
- * \param data Pointer to data buffer for large coordinates
- * \param data_size_bytes Data buffer size in bytes
+ * \param segs Pointer to segment array(uint8_t) for large coordinates
+ * \param segs_size Segment array size
+ * \param data Pointer to data array(float) for large coordinates
+ * \param data_size Data array size
  *
  */
-uint32_t nema_vg_bind_clip_coords_buf(void *segs, uint32_t segs_size_bytes, void *data, uint32_t data_size_bytes);
+uint32_t nema_vg_bind_clip_coords_buffer(void *segs, uint32_t segs_size, void *data, uint32_t data_size);
+
+/** \private */
+uint32_t nema_vg_bind_clip_coords_buf(void *segs, uint32_t segs_size_bytes, void *data, uint32_t data_size_bytes) __attribute__ ((deprecated("This function is deprecated use nema_vg_bind_clip_coords_buffer instead.")));
+
 
 /** \brief Unbind segment and data buffers to be used for handling large coordinates
  *

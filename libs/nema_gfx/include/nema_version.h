@@ -40,8 +40,8 @@ extern "C" {
 
 #define NEMA_MAJOR_VERSION    0x01U       /**< NemaGFX API version, major number */
 #define NEMA_MINOR_VERSION    0x04U       /**< NemaGFX API version, minor number */
-#define NEMA_REVISION_VERSION 0x0BU      /**< NemaGFX API version, revision number */
-#define NEMA_IMP_VERSION      0x00240600U /**< NemaGFX API version, implementation in format 0x00YYMM00 (Y: year, M: month) */
+#define NEMA_REVISION_VERSION 0x0DU      /**< NemaGFX API version, revision number */
+#define NEMA_IMP_VERSION      0x00241001U /**< NemaGFX API version, implementation in format 0x00YYMM00 (Y: year, M: month) */
 
 #define NEMA_API_VERSION ((NEMA_MAJOR_VERSION << 16) + (NEMA_MINOR_VERSION << 8) + (NEMA_REVISION_VERSION)) /**< NemaGFX API version in format 0x00MMmmrr (M:major, m:minor, r:revision if any) */
 

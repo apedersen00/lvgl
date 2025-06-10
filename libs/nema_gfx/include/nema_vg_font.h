@@ -106,6 +106,7 @@ typedef struct {
     const float                 descender;       /**< Vertical distance from the baseline to the lowest point of the font */
     const nema_vg_kern_pair_t  *kern_pairs;      /**< Pointer to the array of the font's kerning pairs */
     uint32_t                    flags;           /**< Bit field, reserved for future use */
+    const uint32_t              units_per_em;    /**< Font units (points) per EM square*/
 } nema_vg_font_t;
 
 /** \brief Bind the font to use in future nema_vg_print() calls. Sets error code if font is not supported.
